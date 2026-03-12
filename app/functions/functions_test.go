@@ -47,3 +47,24 @@ func TestEncrypt_Decrypt(t *testing.T) {
 	}
 
 }
+
+func TestHaversine(t *testing.T) {
+	dist := Haversine(48.8566, 2.3522, 48.8584, 2.2945)
+	if dist < 4000 || dist > 5000 {
+		t.Errorf("distance Tour Eiffel - Notre Dame devrait etre ~4500m, got %f", dist)
+	}
+}
+
+func TestHaversineZero(t *testing.T) {
+	dist := Haversine(48.8566, 2.3522, 48.8566, 2.3522)
+	if dist != 0 {
+		t.Errorf("meme point devrait donner 0, got %f", dist)
+	}
+}
+
+func TestHaversinePetiteDistance(t *testing.T) {
+	dist := Haversine(48.8340, 2.3321, 48.8342, 2.3323)
+	if dist > 50 {
+		t.Errorf("points tres proches devrait etre < 50m, got %f", dist)
+	}
+}

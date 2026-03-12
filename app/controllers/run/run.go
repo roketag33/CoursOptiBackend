@@ -78,3 +78,28 @@ func (r *Run) GetAll(ctx *gin.Context) {
 
 	common.SendResponse(ctx, http.StatusOK, runs)
 }
+
+func (r *Run) Attempt(ctx *gin.Context) {
+	runID := ctx.Param("id")
+	stepID := ctx.Param("stepId")
+
+	var req service.AttemptRequest
+	if err := ctx.BindJSON(&req); err != nil {
+		common.SendResponse(ctx, http.StatusBadRequest, models.KnownError(http.StatusBadRequest, "run.Attempt.BadRequest", err))
+		return
+	}
+
+	result, status, err := r.RunService.Attempt(runID, stepID, req.Lat, req.Lon)
+	if err != nil {
+		if status == 404 {
+			common.SendResponse(ctx, http.StatusNotFound, models.KnownError(http.StatusNotFound, "run.Attempt.NotFound", err))
+		} else if status == 409 {
+			common.SendResponse(ctx, http.StatusConflict, models.KnownError(http.StatusConflict, "run.Attempt.Conflict", err))
+		} else {
+			common.SendResponse(ctx, http.StatusInternalServerError, models.KnownError(http.StatusInternalServerError, "run.Attempt.Error", err))
+		}
+		return
+	}
+
+	common.SendResponse(ctx, http.StatusOK, result)
+}
