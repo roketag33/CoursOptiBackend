@@ -2,6 +2,7 @@ package main
 
 import (
 	"dungeons/app/mongodb"
+	"dungeons/app/routes/auction"
 	"dungeons/app/routes/dungeon"
 	"dungeons/app/routes/inventory"
 	"dungeons/app/routes/player"
@@ -53,6 +54,7 @@ func newDungeonsServer() error {
 	dungeon.SetupRouter(srv.Router)
 	run.SetupRouter(srv.Router)
 	inventory.SetupRouter(srv.Router)
+	auction.SetupRouter(srv.Router)
 
 	server.SetServer(srv)
 
