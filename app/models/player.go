@@ -5,11 +5,13 @@ import "time"
 type PlayerID string
 
 type Player struct {
-	CustomID    string    `bson:"customID" json:"id"`
-	DisplayName string    `json:"display_name"`
-	Gold        int64     `json:"gold"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	CustomID    string                 `bson:"customID"`
+	DisplayName string                 `bson:"displayName"`
+	Password    string                 `bson:"password" json:"-"`
+	Gold        int64                  `bson:"gold"`
+	Stats       map[string]interface{} `bson:"stats"`
+	CreatedAt   time.Time              `bson:"createdAt"`
+	UpdatedAt   time.Time              `bson:"updatedAt"`
 }
 
 type PlayerResponse struct {
