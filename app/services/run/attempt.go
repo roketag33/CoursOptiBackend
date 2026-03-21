@@ -114,6 +114,13 @@ func (r *Run) Attempt(runID string, stepID string, lat float64, lon float64) (*A
 			continue
 		}
 
+		if reward.DropChance > 0 {
+			roll := rand.Intn(100) + 1 // 1 to 100
+			if roll > reward.DropChance {
+				continue // Pas de chance, pas de drop !
+			}
+		}
+
 		var existing models.InventoryEntry
 		err = inventoryCol.FindOne(context.TODO(), bson.M{
 			"playerID": run.PlayerID,

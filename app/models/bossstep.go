@@ -1,9 +1,10 @@
 package models
 
 type Reward struct {
-	ItemID string `bson:"itemID" json:"item_id"`
-	Qty    int    `bson:"qty" json:"qty"`
-	Gold   int64  `bson:"gold" json:"gold"`
+	ItemID     string `bson:"itemID" json:"item_id"`
+	Qty        int    `bson:"qty" json:"qty"`
+	Gold       int64  `bson:"gold" json:"gold"`
+	DropChance int    `bson:"dropChance" json:"drop_chance"` // Pourcentage sur 100
 }
 
 type BossStep struct {
