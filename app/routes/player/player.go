@@ -14,6 +14,7 @@ func SetupRouter(g *gin.Engine) {
 
 	v1 := g.Group("/v1")
 	{
+		v1.GET("/leaderboard", playerController.GetLeaderboard)
 		players := v1.Group("/players")
 		{
 			players.POST("", playerController.Create)

@@ -13,6 +13,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 type Player struct {
@@ -217,4 +218,27 @@ func (s *Player) GetByIds(ids []string) ([]models.Player, error) {
 		Players = append(Players, Player)
 	}
 	return Players, nil
+}
+
+func (s *Player) GetLeaderboard(limit int64) ([]models.Player, error) {
+	srv := server.GetServer()
+	collection := srv.Database.Collection("player")
+
+	opts := options.Find().SetSort(bson.D{{Key: "gold", Value: -1}}).SetLimit(limit)
+	cursor, err := collection.Find(context.TODO(), bson.M{}, opts)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var players []models.Player
+	if err = cursor.All(context.TODO(), &players); err != nil {
+		return nil, err
+	}
+	
+	if players == nil {
+		players = []models.Player{}
+	}
+
+	return players, nil
 }

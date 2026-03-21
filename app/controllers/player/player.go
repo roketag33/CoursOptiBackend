@@ -254,3 +254,13 @@ func (s *Player) GetByIDs(ctx *gin.Context) {
 
 	common.SendResponse(ctx, http.StatusOK, response)
 }
+
+func (s *Player) GetLeaderboard(ctx *gin.Context) {
+	players, err := s.PlayerService.GetLeaderboard(10) // Top 10 par defaut
+	if err != nil {
+		common.SendResponse(ctx, http.StatusInternalServerError, models.KnownError(http.StatusInternalServerError, "player.Leaderboard.Error", err))
+		return
+	}
+
+	common.SendResponse(ctx, http.StatusOK, players)
+}
