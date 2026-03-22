@@ -5,6 +5,7 @@ import (
 	"dungeons/app/routes/auction"
 	"dungeons/app/routes/auth"
 	"dungeons/app/routes/dungeon"
+	"dungeons/app/routes/guild"
 	"dungeons/app/routes/inventory"
 	"dungeons/app/routes/player"
 	"dungeons/app/routes/run"
@@ -57,6 +58,7 @@ func newDungeonsServer() error {
 	inventory.SetupRouter(srv.Router)
 	auction.SetupRouter(srv.Router)
 	auth.SetupRouter(srv.Router)
+	guild.SetupRouter(srv.Router)
 
 	server.SetServer(srv)
 

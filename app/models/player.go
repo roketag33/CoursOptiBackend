@@ -6,12 +6,13 @@ type PlayerID string
 
 type Player struct {
 	CustomID    string                 `bson:"customID"`
-	DisplayName string                 `bson:"displayName"`
+	DisplayName string                 `bson:"displayName" json:"display_name"`
 	Password    string                 `bson:"password" json:"-"`
-	Gold        int64                  `bson:"gold"`
-	Stats       map[string]interface{} `bson:"stats"`
-	CreatedAt   time.Time              `bson:"createdAt"`
-	UpdatedAt   time.Time              `bson:"updatedAt"`
+	GuildID     string                 `bson:"guildID,omitempty" json:"guild_id,omitempty"`
+	Gold        int64                  `bson:"gold" json:"gold"`
+	Stats       map[string]interface{} `bson:"stats" json:"stats"`
+	CreatedAt   time.Time              `bson:"createdAt" json:"created_at"`
+	UpdatedAt   time.Time              `bson:"updatedAt" json:"updated_at"`
 }
 
 type PlayerResponse struct {
