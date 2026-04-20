@@ -11,6 +11,7 @@ type Player struct {
 	GuildID     string                 `bson:"guildID,omitempty" json:"guild_id,omitempty"`
 	Gold        int64                  `bson:"gold" json:"gold"`
 	Stats       map[string]interface{} `bson:"stats" json:"stats"`
+	Suspended   bool                   `bson:"suspended" json:"suspended"`
 	CreatedAt   time.Time              `bson:"createdAt" json:"created_at"`
 	UpdatedAt   time.Time              `bson:"updatedAt" json:"updated_at"`
 }

@@ -39,7 +39,16 @@ func (p *Player) Get(queryParams models.QueryParams) ([]models.Player, error) {
 	collection := srv.Database.Collection(player.Collection())
 
 	filter := mongodb.SelectConstructeur(queryParams)
-	cursor, err = collection.Find(context.TODO(), filter)
+	
+	opts := options.Find()
+	if queryParams.Count > 0 {
+		opts.SetLimit(int64(queryParams.Count))
+	}
+	if queryParams.Offset > 0 {
+		opts.SetSkip(int64(queryParams.Offset))
+	}
+
+	cursor, err = collection.Find(context.TODO(), filter, opts)
 	if err != nil {
 		log.Error().Err(err).Msg("")
 		return nil, err
@@ -112,14 +121,15 @@ func (p *Player) GetByID(id string) (models.Player, error) {
 	queryParams.FilterClause = append(queryParams.FilterClause, "customID,"+id)
 	filter := mongodb.SelectConstructeur(queryParams)
 	err = collection.FindOne(context.TODO(), filter).Decode(&player)
-	if err == nil {
+	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			log.Error().Err(err).Msg("")
+			log.Warn().Err(err).Msg("Player not found")
 			return player, err
 		}
-
+		log.Error().Err(err).Msg("Error finding player")
+		return player, err
 	}
-	return player, err
+	return player, nil
 }
 
 // Update controller to update a Player
@@ -174,9 +184,6 @@ func (p *Player) Update(id string, in *models.Player) error {
 		err = errors.New("Player to be modified was not found")
 	}
 
-	if err == nil && result.ModifiedCount == 0 {
-		err = errors.New("Player could not be updated")
-	}
 	if err != nil {
 		log.Error().Err(err).Msg("")
 	}

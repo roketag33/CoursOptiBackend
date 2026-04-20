@@ -24,7 +24,7 @@ func CheckPassword(password string, hash string) error {
 // GeneratePassword ...
 func GeneratePassword(passwordLength, minSpecialChar, minNum, minUpperCase int) string {
 	var (
-		lowerCharSet   = "abcdedfghijklmnopqrst"
+		lowerCharSet   = "abcdefghijklmnopqrstuvwxyz"
 		upperCharSet   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		specialCharSet = "!@#$%&*"
 		numberSet      = "0123456789"

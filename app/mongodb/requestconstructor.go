@@ -29,7 +29,6 @@ func FilterConstructeur(params models.QueryParams, fq bson.M) bson.M {
 		key      string
 		value    interface{}
 		operator string
-		query    bson.M
 	)
 
 	if len(params.FilterClause) > 0 {
@@ -67,8 +66,11 @@ func FilterConstructeur(params models.QueryParams, fq bson.M) bson.M {
 			case "=":
 				fq[key] = value
 			case ">", ">=", "<", "<=", "!=":
-				if query == nil {
-					query = make(bson.M) // Initialise query comme une map vide
+				var query bson.M
+				if existing, ok := fq[key].(bson.M); ok {
+					query = existing
+				} else {
+					query = make(bson.M)
 				}
 
 				switch operator {

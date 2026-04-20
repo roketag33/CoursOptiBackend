@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 type Player struct {
@@ -45,35 +46,18 @@ func (s *Player) Get(ctx *gin.Context) {
 		return
 	}
 
-	low := params.Offset - 1
-	if low == -1 {
-		low = 0
+	sendingPlayers := players
+	
+	offset := params.Offset
+	if offset <= 0 {
+		offset = 1
 	}
-
-	// Available CountMax calculation
-	maxCount := params.Count
-	if maxCount == 0 {
-		maxCount = 100
-	}
-
-	high := maxCount + low
-	if high > totalCount {
-		high = totalCount
-	}
-
-	if low > high {
-		status := http.StatusBadRequest
-		common.SendResponse(ctx, status, models.KnownError(status, messageTypes.NotFound, errors.New(" Offset cannot be higher than count. ")))
-		return
-	}
-
-	sendingPlayers := players[low:high]
 
 	meta := models.MetaResponse{
 		ObjectName: "Player",
 		TotalCount: totalCount,
 		Count:      len(sendingPlayers),
-		Offset:     low + 1,
+		Offset:     offset,
 	}
 
 	response := &models.WSResponse{
@@ -131,6 +115,10 @@ func (s *Player) GetByID(ctx *gin.Context) {
 
 	player, err := s.PlayerService.GetByID(id)
 	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			common.SendResponse(ctx, http.StatusNotFound, models.KnownError(http.StatusNotFound, messageTypes.NotFound, err))
+			return
+		}
 		common.SendResponse(ctx, http.StatusInternalServerError, models.KnownError(http.StatusInternalServerError, messageTypes.InternalServerError, err))
 		return
 	}

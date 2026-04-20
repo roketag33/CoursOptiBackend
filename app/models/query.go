@@ -57,14 +57,15 @@ func (q *QueryParams) Parse(c *gin.Context) {
 	if c.Request.Method == http.MethodPost || c.Request.Method == http.MethodPut {
 		var body map[string]interface{}
 		if err := c.ShouldBindJSON(&body); err != nil {
-			log.Fatal().Err(err).Msg("")
+			log.Warn().Err(err).Msg("Invalid JSON in body")
+		} else {
+			// Convert map to JSON bytes
+			bodyBytes, err := json.Marshal(body)
+			if err != nil {
+				log.Error().Err(err).Msg("Failed to marshal body")
+			}
+			q.Body = bodyBytes
 		}
-		// Convert map to JSON bytes
-		bodyBytes, err := json.Marshal(body)
-		if err != nil {
-			log.Fatal().Err(err).Msg("")
-		}
-		q.Body = bodyBytes
 	}
 
 	q.FilterClause = c.QueryArray("filter")

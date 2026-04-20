@@ -20,7 +20,7 @@ func SetupRouter(g *gin.Engine) {
 			players.POST("", playerController.Create)
 			players.GET("", playerController.Get)
 			players.GET("/:id", playerController.GetByID)
-			players.POST("/:id", playerController.Update)
+			players.PUT("/:id", playerController.Update)
 			players.GET("/IDS/:ids", playerController.GetByIDs)
 		}
 	}
